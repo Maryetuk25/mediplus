@@ -29,35 +29,35 @@ jobs:
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
 
-  # deploy:
-  #   name: Deploy to EC2
-  #   runs-on: ubuntu-latest
-  #   needs: build-push
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: build-push
 
-  #   steps:
-  #     - name: Deploy on EC2 instance
-  #       run: |
-  #         echo "${{ secrets.SSH_KEY }}" > key2.pem
-  #         chmod 600 key2.pem
+    steps:
+      - name: Deploy on EC2 instance
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > key2.pem
+          chmod 600 key2.pem
 
-  #         ssh -o StrictHostKeyChecking=no -i key2.pem ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
-  #           set -e
+          ssh -o StrictHostKeyChecking=no -i key2.pem ${{ secrets.USERNAME }}@${{ secrets.SERVER_IP }} << 'EOF'
+            set -e
 
-  #           echo "🔑 Logging into ECR..."
-  #           aws ecr get-login-password --region us-east-1 \
-  #             | docker login --username AWS --password-stdin 077058346391.dkr.ecr.us-east-1.amazonaws.com
+            echo "🔑 Logging into ECR..."
+            aws ecr get-login-password --region us-east-1 \
+              | docker login --username AWS --password-stdin 077058346391.dkr.ecr.us-east-1.amazonaws.com
 
-  #           echo "📦 Pulling latest Docker image..."
-  #           docker pull 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
+            echo "📦 Pulling latest Docker image..."
+            docker pull 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
 
-  #           echo "🧹 Cleaning up old container..."
-  #           docker rm -f mediplus || true
+            echo "🧹 Cleaning up old container..."
+            docker rm -f mediplus || true
 
-  #           echo "🚀 Running new container..."
-  #           docker run -d --name mediplus -p 80:80 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
+            echo "🚀 Running new container..."
+            docker run -d --name mediplus -p 80:80 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
 
-  #           echo "✅ Deployment completed successfully!"
-  #         EOF
+            echo "✅ Deployment completed successfully!"
+          EOF
 
       - name: Notify Slack (Success)
         if: success()
