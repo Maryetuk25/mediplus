@@ -6,7 +6,7 @@ on:
 jobs:
   build-push:
     name: Build & Push to Amazon ECR
-    runs-on: ubuntu-latest2
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
