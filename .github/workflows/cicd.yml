@@ -51,10 +51,10 @@ jobs:
             docker pull 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
 
             echo "🧹 Cleaning up old container..."
-            docker rm -f mediplus || true
+            docker rm -f medplus || true
 
             echo "🚀 Running new container..."
-            docker run -d --name mediplus -p 80:80 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
+            docker run -d --name medplus -p 80:80 077058346391.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}
 
             echo "✅ Deployment completed successfully!"
           EOF
@@ -63,12 +63,12 @@ jobs:
         if: success()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"✅ Deployment successful for mediplus (Run #${{ github.run_number }})! 🚀\"}" \
+          --data "{\"text\":\"✅ Deployment successful for Mediplus (Run #${{ github.run_number }})! 🚀\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack (Failure)
         if: failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"❌ Deployment failed for mediplus (Run #${{ github.run_number }})! Please check logs.\"}" \
+          --data "{\"text\":\"❌ Deployment failed for Mediplus (Run #${{ github.run_number }})! Please check logs.\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
